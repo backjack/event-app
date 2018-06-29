@@ -1,0 +1,29 @@
+<div class="eventList container">
+
+  <div class="row" >
+  <div class='col-md-5'>
+    <h2>
+     Upcoming Events 
+    </h2>
+   </div>
+
+   <div class='col-md-2 col-md-offset-5'>
+    <label for="sortId">Sort By:</label>
+    <select class="form-control" id="sortId" (change) = "handleSelect($event.target.value)">
+      <option value='startDate'>Start Date</option>
+      <option>Duration</option>
+      <option value ='price'>Price</option>
+    </select>
+   </div>
+   </div>
+   <hr/>
+    
+   <div class="row" >
+     <div *ngFor="let event of events" class ="col-md-4">
+      <event-thumbnail #thumbnail  [event] = "event" (eventClick) ="handleEvent($event)"
+       (click) ='handleClick(event.name)'>
+     </event-thumbnail>
+      </div>
+    </div>
+      <!--<h1>{{thumbnail.event.name}}</h1>-->
+</div>
