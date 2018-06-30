@@ -1,0 +1,29 @@
+<div class='container'>
+
+  <h2> My Events</h2>
+  <hr>
+  <div *ngIf="events.length ===0">
+         <h3> No Events Registered </h3>
+  </div>
+
+  <div *ngIf="events.length>=1" class = "col-md-12">
+
+     <table class="table table-striped">
+       <thead>
+        <tr>
+           <th> Name </th>
+           <th> Start Date </th>
+           <th> Duration </th>
+           <th> Action </th>
+        </tr>
+        </thead>
+        <tr  *ngFor= "let event of events">
+          <td class="text"> {{event.name}}</td>
+          <td class="text"> {{event.startDate| date:shortDate}}</td>
+          <td class="text"> {{event.duration| duration}}</td>
+          <td> <button class="btn btn-danger"> Withdraw</button></td>
+        </tr>
+     </table> 
+  </div>
+  </div>
+

@@ -13,9 +13,21 @@ declare let toastr;
 export class EventListComponent implements OnInit, OnChanges {
 
   events: Event[];
+  _filteredString :string ='';
   sortBy: string = "startDate";
   constructor(private service: EventService) {
+    
+  }
 
+  get filteredString() :string{
+    return this._filteredString;
+  }
+
+  set filteredString(val:string) {
+    
+    this._filteredString = val;
+    console.log(val);
+    this.events.filter(event=> event.name.toLocaleLowerCase().indexOf(val) !== -1 );
   }
 
   handleSelect(data) {

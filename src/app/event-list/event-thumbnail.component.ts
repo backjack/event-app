@@ -5,10 +5,17 @@ import {Event} from '../shared/events';
   selector:'event-thumbnail',
   template: `<div [routerLink]="['/events',event.id]"  class="well hoverwell thumbnail"> 
   
-  <div class="caption">
+  <div>
     <h4>{{event.name | uppercase}}</h4>
     <div> Start Date : {{event.startDate | date}} </div>
-    <div> Price : {{event.price | currency:'INR'}} </div>
+    <!--<div [class.green] ="event.price <=5000"> Price : {{event.price | currency:'INR'}} </div>-->
+
+    <div [ngStyle] = "{'color':event.price < 5000?'green':'', 
+                         'font-weight':event.price < 5000?'bold':''}"> 
+                         Price : {{event.price | currency:'INR'}} </div>
+     <!--<div [ngStyle] = "{green:event.price < 5000?, 
+                          bold:event.price < 5000}"> Price : {{event.price | currency:'INR'}} </div>-->
+    
     <div> Duration : {{event.duration | duration}} </div>
     <div> By : {{event.professor}} </div>
     <div *ngIf='event?.location'>
@@ -20,10 +27,12 @@ import {Event} from '../shared/events';
     </div>
     
     <p><br>
-    <button class="btn btn-primary" (click)="register()">Register</button></p>
+   
 </div>`,
 styles:[
-  ` .thumbnail {min-height:200px;}
+  ` .thumbnail {min-height:200px;} .green{color: green} .bold{ font-weight: bold;}
+   
+  
   `
 ]
 
@@ -36,5 +45,19 @@ export class EventThumbnail {
 
    register() {
       this.eventClick.emit(this.event);
+   }
+
+   constructor() {
+
+   }
+
+  
+   getClass() {
+
+    if(this.event.price <=5000) {
+      return 'green bold'
+    }
+     
+     return ""
    }
 }

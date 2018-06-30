@@ -9,38 +9,45 @@
 
   <div class="row">
     <div class="col-md-6">
-      <div><strong>Date:</strong> {{event?.startDate| date}}</div>
-      <div><strong>Duration:</strong> {{event?.duration}}</div>
-      <div><strong>Price:</strong> {{event?.price| currency:'INR'}}</div>
+      <div>
+        <strong>Date:</strong> {{event?.startDate| date}}</div>
+      <div>
+        <strong>Duration:</strong> {{event?.duration}}</div>
+      <div>
+        <strong>Price:</strong> {{event?.price| currency:'INR'}}</div>
     </div>
-    <div class="col-md-6">
+    <div class="col-md-5">
       <div *ngIf="event.location">
-      <address>
-        <strong>Address:</strong><br />
-        {{event?.location?.address}}<br />
-        {{event?.location?.city}}, {{event?.location?.country}}
-      </address>
+        <address>
+          <strong>Address:</strong>
+          <br /> {{event?.location?.address}}
+          <br /> {{event?.location?.city}}, {{event?.location?.country}}
+        </address>
       </div>
       <div *ngIf="event.online">
-          <div > Online Url : {{event.online}}</div>
+        <div> Online Url : {{event.online}}</div>
       </div>
+    </div>
+    <div class="col-md-1">
+      <button [disabled] ="isDisabled" class="btn btn-primary" (click)="register()">{{action}}</button>
+     
     </div>
   </div>
 
   <hr/>
   <h3>Sessions</h3>
-  <div class ="row">
-    <div *ngIf ="sessions.length>0; else no_session">
-        
-    <div *ngFor="let session of sessions" class= "col-md-10">
-       <app-session-detail  [session]="session"></app-session-detail>
+  <div class="row">
+    <div *ngIf="sessions.length>0; else no_session">
+
+      <div *ngFor="let session of sessions" class="col-md-10">
+        <app-session-detail [session]="session"></app-session-detail>
+      </div>
     </div>
-  </div>
     <ng-template #no_session>
-        <div>
-         <h4 style ="text-align:center">No sessions Found for this course </h4>
-        </div>
+      <div>
+        <h4 style="text-align:center">No sessions Found for this course </h4>
+      </div>
     </ng-template>
-  
+
   </div>
 </div>
