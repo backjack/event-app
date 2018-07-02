@@ -1,8 +1,14 @@
 
-  <div  class="well hoverwell thumbnail">
-  
-    <div><h4>{{session.title}}</h4></div>
-    <div> Duration : {{session.duration}}</div>
-    <div> Level : {{session.level}}</div>
-    <p>{{session.description}}</p>
-  </div>
+  <collapsable-well >
+
+    <div well-title>
+         {{session.title}}
+    </div>
+
+    <div well-body>
+      <div> Duration : {{session.duration}}</div>
+      <div> Level : {{session.level}}</div>
+      <p>{{session.description}}</p>
+    </div>
+
+  </collapsable-well>
