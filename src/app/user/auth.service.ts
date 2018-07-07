@@ -8,11 +8,25 @@ export class AuthService {
   
   constructor() { 
 
+   
+  }
+
+  login(userName:string,password:string) {
+    console.log(userName);
+    console.log(password);
     this.currentUser = {
       id:"nsharm49",
       firstName :"Neeraj",
       lastName :"Sharma",
       password  :"Neeraj"
      }
+  }
+  
+  isAuthenticated() {
+
+    if(this.currentUser!== undefined) {
+      return false;
+    }
+    return true;
   }
 }

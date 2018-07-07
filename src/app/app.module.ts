@@ -16,7 +16,8 @@ import { Error404Component } from 'src/app/event-detail/error-404.component';
 import {EventRouteActivitor}  from 'src/app/event-detail/event-route-activator.service'
 import { AuthService } from 'src/app/user/auth.service';
 import { MyeventsComponent } from './myevents/myevents.component';
-import {CollapsableComponent} from './shared/collalpsable-well.component'
+import {CollapsableComponent} from './shared/collalpsable-well.component';
+
 
 @NgModule({
   declarations: [

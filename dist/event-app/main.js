@@ -625,7 +625,7 @@ module.exports = ".nav.navbar-nav {\r\n    font-size :15px\r\n}\r\n\r\n#searchFo
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"navbar navbar-default\">\n        <div class=\"container-fluid\">\n          <div class=\"navbar-header\">\n            <a class=\"navbar-brand\" >ngEvents</a>\n          </div>\n      \n          <div class=\"collapse navbar-collapse\">\n            <ul class=\"nav navbar-nav\">\n              <li>\n                <a [routerLink] = \"['/events']\"  routerLinkActive ='active' \n                [routerLinkActiveOptions]='{exact:true}'>All Events</a>\n              </li>\n              <li><a [routerLink] = \"['/events/new']\"  routerLinkActive ='active' >Create Event</a></li>\n              \n              <li *ngIf=\"authService.currentUser?.firstName\">\n                <a [routerLink] = \"['/events/myevents']\"  routerLinkActive ='active' >My Events</a>\n              </li>  \n            </ul>\n            <div class=\"navbar-header navbar-right\">\n              <ul class=\"nav navbar-nav\">\n                <li>\n                  <a [routerLink] = \"['user/profile']\">Welcome {{authService.currentUser.firstName}} </a>\n                </li>\n              </ul>\n            </div>\n          <!--   <form id=\"searchForm\"  class=\"navbar-form navbar-right\"  >\n              <div class=\"form-group\">\n                <input type=\"text\" class=\"form-control\" placeholder=\"Search Sessions\" >\n              </div>\n              <button class=\"btn btn-default\">\n                Search\n              </button>\n            </form> -->\n          </div>\n        </div>\n      </div>"
+module.exports = "<div class=\"navbar navbar-default\">\n        <div class=\"container-fluid\">\n          <div class=\"navbar-header\">\n            <a class=\"navbar-brand\" >ngEvents</a>\n          </div>\n      \n          <div class=\"collapse navbar-collapse\">\n            <ul class=\"nav navbar-nav\">\n              <li>\n                <a [routerLink] = \"['/events']\"  routerLinkActive ='active' \n                [routerLinkActiveOptions]='{exact:true}'>All Events</a>\n              </li>\n              <li><a [routerLink] = \"['/events/new']\"  routerLinkActive ='active' >Create Event</a></li>\n              \n              <li *ngIf=\"!authService.isAuthenticated()\">\n                <a [routerLink] = \"['/events/myevents']\"  routerLinkActive ='active' >My Events</a>\n              </li>  \n            </ul>\n            <div class=\"navbar-header navbar-right\">\n              <ul class=\"nav navbar-nav\">\n                <li>\n                  <a *ngIf = \"authService.isAuthenticated()\" [routerLink] =\"['user/login']\">Login</a>\n                  <a *ngIf = \"!authService.isAuthenticated()\" [routerLink] = \"['user/profile']\">Welcome {{authService.currentUser.firstName}} </a>\n                </li>\n              </ul>\n            </div>\n          <!--   <form id=\"searchForm\"  class=\"navbar-form navbar-right\"  >\n              <div class=\"form-group\">\n                <input type=\"text\" class=\"form-control\" placeholder=\"Search Sessions\" >\n              </div>\n              <button class=\"btn btn-default\">\n                Search\n              </button>\n            </form> -->\n          </div>\n        </div>\n      </div>"
 
 /***/ }),
 
@@ -1091,13 +1091,23 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 var AuthService = /** @class */ (function () {
     function AuthService() {
+    }
+    AuthService.prototype.login = function (userName, password) {
+        console.log(userName);
+        console.log(password);
         this.currentUser = {
             id: "nsharm49",
             firstName: "Neeraj",
             lastName: "Sharma",
             password: "Neeraj"
         };
-    }
+    };
+    AuthService.prototype.isAuthenticated = function () {
+        if (this.currentUser !== undefined) {
+            return false;
+        }
+        return true;
+    };
     AuthService = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Injectable"])(),
         __metadata("design:paramtypes", [])
