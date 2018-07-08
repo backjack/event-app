@@ -1,28 +1,38 @@
+
 import { Component } from "@angular/core";
+import { OnInit } from "@angular/core";
+import { FormControl, FormGroup } from '@angular/forms';
+import { Validators } from "@angular/forms";
 
 
 
 @Component({
 
-    template :`
-      <div class="container">
-       <h2> Edit Your Profile </h2>
-        <hr>
-          <div class ="col-md-6">
-            <h3> Edit Profile Form will go here!</h3>
-            <br/>
-            <br/>
-            <div class="btn-group">
-            <button type ="submit" class ="btn btn-primary"> Save</button>
-            <button type ="button" class ="btn btn-default"> Cancel</button>
-            </div>
-        </div>
-      </div>
-    
-    `
+    templateUrl:'user-profile.component.html',
+    styles:['error {color:red}']
     
 })
-export class UserProfile {
+export class UserProfile implements OnInit{
+ 
+   profileForm: FormGroup 
+   firstName: FormControl;
+   lastName: FormControl;
+
+  ngOnInit(): void {
+    
+    this.firstName = new FormControl("a", [Validators.required, Validators.pattern("[a-zA-Z].*")]);
+    this.lastName = new FormControl("b", Validators.required);
+    this.profileForm = new FormGroup({
+      firstName:this.firstName,
+      lastName:this.lastName
+    })
+    
+  }
+
+  validateFirstName() {
+
+    return this.firstName.invalid && this.firstName.touched
+  }
 
 
 }

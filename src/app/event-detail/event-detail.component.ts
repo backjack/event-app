@@ -46,6 +46,6 @@ export class EventDetailComponent implements OnInit {
     this.myeventService.addEvent(this.authService.currentUser.id, this.event);
     toastr.success("Successfully Registered for ",this.event.name);
     this.isDisabled = true;
-    this.action ="View"
+    this.action ="Registered Successfully"
   }
 }
