@@ -10,13 +10,13 @@ declare let toastr;
   templateUrl: './event-list.component.html',
   styleUrls: ['./event-list.component.css']
 })
-export class EventListComponent implements OnInit, OnChanges {
+export class EventListComponent implements OnInit {
 
   events: Event[];
   _filteredString :string ='';
   sortBy: string = "startDate";
   constructor(private service: EventService) {
-    
+    this.events = new Array<Event>();
   }
 
   get filteredString() :string{
@@ -36,14 +36,33 @@ export class EventListComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
-    this.events = this.service.getEvents();
+    this.service.getEvents().subscribe(
+      (data:Array<any>) =>{
+        
+              data.forEach(elem => {
+        
+                let event : Event= {
+                  id: elem['eventId'],
+                  name: elem['name'],
+                  price: elem['price'],
+                  duration: elem['duration'],
+                  startDate :elem['startDate'],
+                  professor :elem['professor'],
+                  online :elem['online'],
+                  imgUrl :null,
+                  location : {
+                    address : elem['address'],
+                    city: elem['city']
+                  }
+                }
+                 console.log(elem);
+                 this.events.push(event);
+              });
+            
+            });
     this.sortEvents();
   }
 
-  ngOnChanges() {
-
-    this.sortEvents();
-  }
 
   sortEvents() {
 

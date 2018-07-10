@@ -4,6 +4,7 @@
 <hr>
 <div class = "col-md-4">
 
+<em *ngIf="isLoginFailed"> Invalid username or password</em>
 <form #loginForm="ngForm" (ngSubmit)="login(loginForm.value)" autocomplete="off">
    <div class="form-group">
       <label for ="userName">User Name:</label>
@@ -23,10 +24,5 @@
   </form>
 </div>
 
-<div class = "col-md-6">
-     loginForm.valid :{{loginForm.valid}} <br>
-     loginForm.dirty :{{loginForm.dirty}}  <br>
-     loginForm.pristine :{{loginForm.pristine}} <br>
-     loginForm.touched :{{loginForm.touched}} <br>
-</div>
+
 </div>

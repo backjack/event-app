@@ -18,7 +18,7 @@ export class EventDetailComponent implements OnInit {
 
   event: Event;
   sessions : ISession[];
-  isDisabled :boolean =false;
+  isDisabled :boolean =true;
   action:string
   constructor(private eventService: EventService, private route:ActivatedRoute, 
     private sessionService: SessionService, private authService:AuthService,
@@ -32,12 +32,17 @@ export class EventDetailComponent implements OnInit {
     this.event = this.eventService.getEvent(this.route.snapshot.params['id']);
     this.sessions = this.sessionService.getSessions(this.route.snapshot.params['id']);
     
-    let userEvents = this.myeventService.getMyEvents(this.authService.currentUser.id);
-    if(userEvents.find(userEvent => userEvent.id === this.event.id)) {
+    if(this.authService.currentUser!== undefined) {
+      let userEvents = this.myeventService.getMyEvents(this.authService.currentUser.id);
+      if(userEvents.find(userEvent => userEvent.id === this.event.id)) {
 
-      this.action ="View";
-      this.isDisabled = true;
+        this.action ="View";
+        this.isDisabled = true;
+      } else {
+        this.isDisabled = false;
+      }
     }
+  
   }
 
 

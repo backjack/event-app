@@ -17,7 +17,7 @@ import {EventRouteActivitor}  from 'src/app/event-detail/event-route-activator.s
 import { AuthService } from 'src/app/user/auth.service';
 import { MyeventsComponent } from './myevents/myevents.component';
 import {CollapsableComponent} from './shared/collalpsable-well.component';
-
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -35,7 +35,8 @@ import {CollapsableComponent} from './shared/collalpsable-well.component';
   imports: [
     BrowserModule,
     FormsModule,
-    RouterModule.forRoot(appRoutes)
+    RouterModule.forRoot(appRoutes),
+    HttpClientModule
   ],
   providers: [EventService,SessionService,EventRouteActivitor,AuthService],
   bootstrap: [AppComponent]

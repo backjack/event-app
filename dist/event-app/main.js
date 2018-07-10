@@ -122,12 +122,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var src_app_user_auth_service__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! src/app/user/auth.service */ "./src/app/user/auth.service.ts");
 /* harmony import */ var _myevents_myevents_component__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./myevents/myevents.component */ "./src/app/myevents/myevents.component.ts");
 /* harmony import */ var _shared_collalpsable_well_component__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./shared/collalpsable-well.component */ "./src/app/shared/collalpsable-well.component.ts");
+/* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm5/http.js");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+
 
 
 
@@ -167,7 +169,8 @@ var AppModule = /** @class */ (function () {
             imports: [
                 _angular_platform_browser__WEBPACK_IMPORTED_MODULE_0__["BrowserModule"],
                 _angular_forms__WEBPACK_IMPORTED_MODULE_2__["FormsModule"],
-                _angular_router__WEBPACK_IMPORTED_MODULE_11__["RouterModule"].forRoot(_route__WEBPACK_IMPORTED_MODULE_10__["appRoutes"])
+                _angular_router__WEBPACK_IMPORTED_MODULE_11__["RouterModule"].forRoot(_route__WEBPACK_IMPORTED_MODULE_10__["appRoutes"]),
+                _angular_common_http__WEBPACK_IMPORTED_MODULE_19__["HttpClientModule"]
             ],
             providers: [_shared_event_service__WEBPACK_IMPORTED_MODULE_8__["EventService"], _shared_session_service__WEBPACK_IMPORTED_MODULE_12__["SessionService"], src_app_event_detail_event_route_activator_service__WEBPACK_IMPORTED_MODULE_15__["EventRouteActivitor"], src_app_user_auth_service__WEBPACK_IMPORTED_MODULE_16__["AuthService"]],
             bootstrap: [_app_component__WEBPACK_IMPORTED_MODULE_3__["AppComponent"]]
@@ -276,24 +279,29 @@ var EventDetailComponent = /** @class */ (function () {
         this.sessionService = sessionService;
         this.authService = authService;
         this.myeventService = myeventService;
-        this.isDisabled = false;
+        this.isDisabled = true;
         this.action = "Register";
     }
     EventDetailComponent.prototype.ngOnInit = function () {
         var _this = this;
         this.event = this.eventService.getEvent(this.route.snapshot.params['id']);
         this.sessions = this.sessionService.getSessions(this.route.snapshot.params['id']);
-        var userEvents = this.myeventService.getMyEvents(this.authService.currentUser.id);
-        if (userEvents.find(function (userEvent) { return userEvent.id === _this.event.id; })) {
-            this.action = "View";
-            this.isDisabled = true;
+        if (this.authService.currentUser !== undefined) {
+            var userEvents = this.myeventService.getMyEvents(this.authService.currentUser.id);
+            if (userEvents.find(function (userEvent) { return userEvent.id === _this.event.id; })) {
+                this.action = "View";
+                this.isDisabled = true;
+            }
+            else {
+                this.isDisabled = false;
+            }
         }
     };
     EventDetailComponent.prototype.register = function () {
         this.myeventService.addEvent(this.authService.currentUser.id, this.event);
         toastr.success("Successfully Registered for ", this.event.name);
         this.isDisabled = true;
-        this.action = "View";
+        this.action = "Registered Successfully";
     };
     EventDetailComponent = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
@@ -476,6 +484,7 @@ var EventListComponent = /** @class */ (function () {
         this.service = service;
         this._filteredString = '';
         this.sortBy = "startDate";
+        this.events = new Array();
     }
     Object.defineProperty(EventListComponent.prototype, "filteredString", {
         get: function () {
@@ -494,10 +503,27 @@ var EventListComponent = /** @class */ (function () {
         this.sortEvents();
     };
     EventListComponent.prototype.ngOnInit = function () {
-        this.events = this.service.getEvents();
-        this.sortEvents();
-    };
-    EventListComponent.prototype.ngOnChanges = function () {
+        var _this = this;
+        this.service.getEvents().subscribe(function (data) {
+            data.forEach(function (elem) {
+                var event = {
+                    id: elem['eventId'],
+                    name: elem['name'],
+                    price: elem['price'],
+                    duration: elem['duration'],
+                    startDate: elem['startDate'],
+                    professor: elem['professor'],
+                    online: elem['online'],
+                    imgUrl: null,
+                    location: {
+                        address: elem['address'],
+                        city: elem['city']
+                    }
+                };
+                console.log(elem);
+                _this.events.push(event);
+            });
+        });
         this.sortEvents();
     };
     EventListComponent.prototype.sortEvents = function () {
@@ -848,7 +874,7 @@ var DurationPipe = /** @class */ (function () {
             case 2: return 'One Hour';
             case 3: return 'Half Day';
             case 4: return 'Full Day';
-            default: return value.toString();
+            default: return value + "";
         }
     };
     DurationPipe = __decorate([
@@ -874,92 +900,58 @@ var DurationPipe = /** @class */ (function () {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "EventService", function() { return EventService; });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm5/http.js");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+var __metadata = (undefined && undefined.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
 
 var EventService = /** @class */ (function () {
-    function EventService() {
-        this.events = EVENTS;
+    function EventService(httpClient) {
+        var _this = this;
+        this.httpClient = httpClient;
+        this.events = new Array();
+        this.httpClient.get("/services/events").subscribe(function (data) {
+            data.forEach(function (elem) {
+                var event = {
+                    id: elem['eventId'],
+                    name: elem['name'],
+                    price: elem['price'],
+                    duration: elem['duration'],
+                    startDate: elem['startDate'],
+                    professor: elem['professor'],
+                    online: elem['online'],
+                    imgUrl: null,
+                    location: {
+                        address: elem['address'],
+                        city: elem['city']
+                    }
+                };
+                console.log(elem);
+                _this.events.push(event);
+            });
+        });
     }
     EventService.prototype.getEvents = function () {
-        return this.events;
+        return this.httpClient.get("/services/events");
     };
     EventService.prototype.getEvent = function (id) {
+        console.log(this.events);
         return this.events.find(function (event) { return event.id === id; });
     };
     EventService = __decorate([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Injectable"])()
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Injectable"])(),
+        __metadata("design:paramtypes", [_angular_common_http__WEBPACK_IMPORTED_MODULE_1__["HttpClient"]])
     ], EventService);
     return EventService;
 }());
 
-var EVENTS = [{
-        id: "1",
-        name: "Angular 4",
-        startDate: new Date('09-20-2018'),
-        imgUrl: "assets/angular-logo.png",
-        professor: "Steve Hook",
-        price: 5800,
-        duration: 1,
-        location: {
-            "address": "14, Sector 10",
-            "city": "Navi Mumbai"
-        }
-    },
-    {
-        id: "2",
-        name: "Java 8",
-        startDate: new Date('02-10-2018'),
-        imgUrl: "assets/java.png",
-        professor: "Steve Hook",
-        price: 11000,
-        duration: 3,
-        location: {
-            "address": "14, Sector 10",
-            "city": "Navi Mumbai"
-        }
-    },
-    {
-        id: "3",
-        name: "Introduction to Javascript",
-        startDate: new Date('05-20-2018'),
-        imgUrl: "assets/javascript.png",
-        professor: "David Crockford",
-        price: 2300,
-        duration: 4,
-        location: {
-            "address": "14, Sector 26",
-            "city": "Noida"
-        }
-    },
-    {
-        id: "4",
-        name: "Mongodb for Begineers",
-        startDate: new Date('06-18-2018'),
-        imgUrl: "assets/mongo-db-logo.png",
-        professor: "Aston Kucher",
-        price: 18800,
-        duration: 1,
-        online: "https://www.udemy.com"
-    },
-    {
-        id: "5",
-        name: "Hadoop Introduction",
-        startDate: new Date('01-12-2018'),
-        imgUrl: "string",
-        professor: "Aston Kucher",
-        price: 5800,
-        duration: 2,
-        location: {
-            "address": "14, Sector 10",
-            "city": "Mumbai"
-        }
-    }
-];
 
 
 /***/ }),
@@ -1079,6 +1071,7 @@ var SESSION = [{
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AuthService", function() { return AuthService; });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm5/http.js");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1089,18 +1082,16 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 
+
 var AuthService = /** @class */ (function () {
-    function AuthService() {
+    function AuthService(httpCLient) {
+        this.httpCLient = httpCLient;
     }
     AuthService.prototype.login = function (userName, password) {
-        console.log(userName);
-        console.log(password);
-        this.currentUser = {
-            id: "nsharm49",
-            firstName: "Neeraj",
-            lastName: "Sharma",
-            password: "Neeraj"
-        };
+        return this.httpCLient.get('services/user/login/' + userName + '/' + password);
+    };
+    AuthService.prototype.setUser = function (currentUser) {
+        this.currentUser = currentUser;
     };
     AuthService.prototype.isAuthenticated = function () {
         if (this.currentUser !== undefined) {
@@ -1110,7 +1101,7 @@ var AuthService = /** @class */ (function () {
     };
     AuthService = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Injectable"])(),
-        __metadata("design:paramtypes", [])
+        __metadata("design:paramtypes", [_angular_common_http__WEBPACK_IMPORTED_MODULE_1__["HttpClient"]])
     ], AuthService);
     return AuthService;
 }());

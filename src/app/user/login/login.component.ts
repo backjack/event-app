@@ -10,16 +10,41 @@ import { Router } from '@angular/router';
 export class LoginComponent implements OnInit {
 
 
-  constructor(private authService: AuthService,private router:Router) {
+   isLoginFailed: boolean;
 
+  constructor(private authService: AuthService,private router:Router) {
+   
   }
 
   login(val) {
-    this.authService.login(val.username, val.password);
-    this.router.navigate(["events"]);
+    this.authService.login(val.userName, val.password).subscribe((data:Array<any>)=>{
+        if(data.length>0) {
+          console.log(data);
+           let currentUser = {
+             id:data[0]["userId"],
+             firstName:data[0]["firstName"],
+             lastName:data[0]["lastName"],
+             password:null
+           }
+           this.authService.setUser(currentUser);
+           this.successLogin();
+       } else {
+          this.loginFailed();
+       }
+     });
+
   }
 
+  successLogin = function() {
+    this.router.navigate(["events"]);
+    this.isLoginFailed = false;
+  }
   
+  loginFailed = function() {
+    this.isLoginFailed = true;
+  }
+
+
   ngOnInit() {
   }
 
