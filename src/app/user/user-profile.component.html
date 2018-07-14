@@ -2,7 +2,7 @@
 <div class ="container">
         <h2> Edit Your Profile </h2>
     <div class="col-md-5">
-        <form [formGroup] = 'profileForm' autocomplete="off">
+        <form [formGroup] = 'profileForm' autocomplete="off" (ngSubmit)="save(profileForm.value)">
 
             <div>
                     <label for ="firstName">First Name:</label>

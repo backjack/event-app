@@ -1072,6 +1072,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AuthService", function() { return AuthService; });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
 /* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm5/http.js");
+/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! rxjs/operators */ "./node_modules/rxjs/_esm5/operators/index.js");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1083,12 +1084,36 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 };
 
 
+
 var AuthService = /** @class */ (function () {
     function AuthService(httpCLient) {
         this.httpCLient = httpCLient;
     }
     AuthService.prototype.login = function (userName, password) {
-        return this.httpCLient.get('services/user/login/' + userName + '/' + password);
+        var _this = this;
+        return this.httpCLient.get('services/user/login/' + userName + '/' + password)
+            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_2__["tap"])(function (data) {
+            if (data[0] !== undefined) {
+                _this.currentUser = {
+                    id: data[0]["userId"],
+                    firstName: data[0]["firstName"],
+                    lastName: data[0]["lastName"],
+                    password: null
+                };
+            }
+        }));
+    };
+    AuthService.prototype.save = function (firstName, lastName, userId) {
+        var _this = this;
+        var user = { firstName: firstName, lastName: lastName, userId: userId };
+        console.log("-------------------------------------");
+        console.log(user);
+        console.log("-------------------------------------");
+        var headers = new _angular_common_http__WEBPACK_IMPORTED_MODULE_1__["HttpHeaders"]({ 'Content-Type': 'application/json' });
+        return this.httpCLient.post('services/user/profile/save', user, { headers: headers }).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_2__["tap"])(function (data) {
+            _this.currentUser.firstName = firstName;
+            _this.currentUser.lastName = lastName;
+        }));
     };
     AuthService.prototype.setUser = function (currentUser) {
         this.currentUser = currentUser;

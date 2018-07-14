@@ -14,8 +14,13 @@ var events = {
     login:function(userId,password,callback){
         console.log(userId);
         return db.query("Select userId, firstName, lastName from user where userid = ? and password= ?",[userId,password],callback);
-    }
+    },
 
+    saveUser:function(userId,firstName,lastName,callback){
+      
+        return db.query("update user set firstName=?, lastName=? where userid=?",
+        [firstName,lastName,userId],callback);
+    }
 }
 
 module.exports =events;

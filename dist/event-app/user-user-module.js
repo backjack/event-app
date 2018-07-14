@@ -63,14 +63,6 @@ var LoginComponent = /** @class */ (function () {
         var _this = this;
         this.authService.login(val.userName, val.password).subscribe(function (data) {
             if (data.length > 0) {
-                console.log(data);
-                var currentUser = {
-                    id: data[0]["userId"],
-                    firstName: data[0]["firstName"],
-                    lastName: data[0]["lastName"],
-                    password: null
-                };
-                _this.authService.setUser(currentUser);
                 _this.successLogin();
             }
             else {
@@ -102,7 +94,7 @@ var LoginComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "\r\n<div class =\"container\">\r\n        <h2> Edit Your Profile </h2>\r\n    <div class=\"col-md-5\">\r\n        <form [formGroup] = 'profileForm' autocomplete=\"off\">\r\n\r\n            <div>\r\n                    <label for =\"firstName\">First Name:</label>\r\n                    <em  *ngIf=\"validateFirstName() && profileForm.controls.firstName.errors.required\"> Required</em>\r\n                    <em  *ngIf=\"validateFirstName() && profileForm.controls.firstName.errors.pattern\"> Incorrect value</em>\r\n                    <input formControlName =\"firstName\" id=\"userName\"  type=\"text\" required\r\n                     class=\"form-control\" placeholder=\"First Name ...\" >\r\n            </div>\r\n\r\n            <div class=\"form-group\">\r\n                    <label for =\"lastName\">LastName:</label>\r\n                    <input formControlName =\"lastName\" id=\"lastName\"  type=\"text\" required\r\n                     class=\"form-control\" placeholder=\"Last Name ...\">\r\n                  </div>\r\n            \r\n            \r\n               <button type='submit' [disabled]= \"profileForm.invalid\" class='btn btn-primary'>Save</button>\r\n               <button type='button' class='btn btn-default'>Cancel</button>\r\n        </form>\r\n    </div>\r\n\r\n\r\n\r\n\r\n</div>"
+module.exports = "\r\n<div class =\"container\">\r\n        <h2> Edit Your Profile </h2>\r\n    <div class=\"col-md-5\">\r\n        <form [formGroup] = 'profileForm' autocomplete=\"off\" (ngSubmit)=\"save(profileForm.value)\">\r\n\r\n            <div>\r\n                    <label for =\"firstName\">First Name:</label>\r\n                    <em  *ngIf=\"validateFirstName() && profileForm.controls.firstName.errors.required\"> Required</em>\r\n                    <em  *ngIf=\"validateFirstName() && profileForm.controls.firstName.errors.pattern\"> Incorrect value</em>\r\n                    <input formControlName =\"firstName\" id=\"userName\"  type=\"text\" required\r\n                     class=\"form-control\" placeholder=\"First Name ...\" >\r\n            </div>\r\n\r\n            <div class=\"form-group\">\r\n                    <label for =\"lastName\">LastName:</label>\r\n                    <input formControlName =\"lastName\" id=\"lastName\"  type=\"text\" required\r\n                     class=\"form-control\" placeholder=\"Last Name ...\">\r\n                  </div>\r\n            \r\n            \r\n               <button type='submit' [disabled]= \"profileForm.invalid\" class='btn btn-primary'>Save</button>\r\n               <button type='button' class='btn btn-default'>Cancel</button>\r\n        </form>\r\n    </div>\r\n\r\n\r\n\r\n\r\n</div>"
 
 /***/ }),
 
@@ -118,17 +110,23 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "UserProfile", function() { return UserProfile; });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
 /* harmony import */ var _angular_forms__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/forms */ "./node_modules/@angular/forms/fesm5/forms.js");
+/* harmony import */ var src_app_user_auth_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! src/app/user/auth.service */ "./src/app/user/auth.service.ts");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+var __metadata = (undefined && undefined.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
 
 
 
 var UserProfile = /** @class */ (function () {
-    function UserProfile() {
+    function UserProfile(authService) {
+        this.authService = authService;
     }
     UserProfile.prototype.ngOnInit = function () {
         this.firstName = new _angular_forms__WEBPACK_IMPORTED_MODULE_1__["FormControl"]("a", [_angular_forms__WEBPACK_IMPORTED_MODULE_1__["Validators"].required, _angular_forms__WEBPACK_IMPORTED_MODULE_1__["Validators"].pattern("[a-zA-Z].*")]);
@@ -141,11 +139,16 @@ var UserProfile = /** @class */ (function () {
     UserProfile.prototype.validateFirstName = function () {
         return this.firstName.invalid && this.firstName.touched;
     };
+    UserProfile.prototype.save = function (values) {
+        console.log(values);
+        this.authService.save(values.firstName, values.lastName, this.authService.currentUser.id).subscribe(function (data) { console.log(data); });
+    };
     UserProfile = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
             template: __webpack_require__(/*! ./user-profile.component.html */ "./src/app/user/user-profile.component.html"),
             styles: ['error {color:red}']
-        })
+        }),
+        __metadata("design:paramtypes", [src_app_user_auth_service__WEBPACK_IMPORTED_MODULE_2__["AuthService"]])
     ], UserProfile);
     return UserProfile;
 }());
